@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-100 text-gray-800">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Velox · Python SDL2 Wrapper</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex min-h-screen">
+
+  <aside class="w-64 bg-white shadow-lg p-6 hidden md:block">
+    <h1 class="text-2xl font-bold text-blue-700 mb-4">Velox</h1>
+    <p class="text-xs text-gray-500 mb-6">SDL2 for Python. Fast. Lightweight. Modern.</p>
+    <nav class="space-y-3 text-sm">
+      <a href="#intro" class="block hover:text-blue-600">🎮 Introduction</a>
+      <a href="#install" class="block hover:text-blue-600">📦 Installation</a>
+      <a href="#init-window" class="block hover:text-blue-600">🖥️ Creating a Window</a>
+      <a href="#game-loop" class="block hover:text-blue-600">🔁 Game Loop</a>
+      <a href="#drawing" class="block hover:text-blue-600">🖌️ Drawing</a>
+      <a href="#events" class="block hover:text-blue-600">🎯 Event Handling</a>
+    </nav>
+  </aside>
+
+  <main class="flex-1 p-8 overflow-y-auto">
+    <header class="mb-10">
+      <h2 class="text-4xl font-bold text-blue-700 mb-2">Velox</h2>
+      <p class="text-gray-600 text-lg">A blazing-fast SDL2 wrapper for Python. Built for speed, flexibility, and control.</p>
+    </header>
+
+    <section id="intro" class="mb-10">
+      <h3 class="text-2xl font-semibold mb-2">🎮 Introduction</h3>
+      <p>Velox is a low-level yet beginner-friendly Python library built on top of SDL2. It provides game developers with efficient access to rendering, input, and sound, with minimal abstraction.</p>
+    </section>
+
+    <section id="install" class="mb-10">
+      <h3 class="text-2xl font-semibold mb-2">📦 Installation</h3>
+      <pre class="bg-gray-800 text-green-300 p-4 rounded overflow-x-auto">
+pip install velox
+      </pre>
+      <p class="text-sm text-gray-500 mt-1">Requires Python 3.7+ and SDL2 installed on your system.</p>
+    </section>
+
+    <section id="init-window" class="mb-10">
+      <h3 class="text-2xl font-semibold mb-2">🖥️ Creating a Window</h3>
+      <pre class="bg-gray-900 text-white p-4 rounded overflow-x-auto">
+import velox
+
+win = velox.Window("Velox Demo", 800, 600)
+win.show()
+      </pre>
+    </section>
+
+    <section id="game-loop" class="mb-10">
+      <h3 class="text-2xl font-semibold mb-2">🔁 Game Loop</h3>
+      <pre class="bg-gray-900 text-white p-4 rounded overflow-x-auto">
+running = True
+while running:
+    for event in velox.poll_events():
+        if event.type == velox.QUIT:
+            running = False
+
+    win.clear(0, 0, 0)  # Clear with black
+    # drawing code...
+    win.present()       # Show frame
+      </pre>
+    </section>
+
+    <section id="drawing" class="mb-10">
+      <h3 class="text-2xl font-semibold mb-2">🖌️ Drawing</h3>
+      <pre class="bg-gray-900 text-white p-4 rounded overflow-x-auto">
+win.draw_rect(100, 100, 50, 50, color=(255, 0, 0))  # Red square
+      </pre>
+      <p>Velox supports basic shapes, images, and text rendering via SDL2 surfaces and textures.</p>
+    </section>
+
+    <section id="events" class="mb-10">
+      <h3 class="text-2xl font-semibold mb-2">🎯 Event Handling</h3>
+      <pre class="bg-gray-900 text-white p-4 rounded overflow-x-auto">
+for event in velox.poll_events():
+    if event.type == velox.KEYDOWN:
+        print("Key pressed:", event.key)
+      </pre>
+    </section>
+    </section>
+  </main>
+</body>
+</html>
