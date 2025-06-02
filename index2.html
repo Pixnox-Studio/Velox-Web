@@ -18,6 +18,7 @@
       <a href="#game-loop" class="block hover:text-blue-600">🔁 Game Loop</a>
       <a href="#drawing" class="block hover:text-blue-600">🖌️ Drawing</a>
       <a href="#events" class="block hover:text-blue-600">🎯 Event Handling</a>
+      <a href="#clock" class="block hover:text-blue-600">⏱️ Frame Limiting</a>
     </nav>
   </aside>
 
@@ -29,13 +30,13 @@
 
     <section id="intro" class="mb-10">
       <h3 class="text-2xl font-semibold mb-2">🎮 Introduction</h3>
-      <p>Velox is a low-level yet beginner-friendly Python library built on top of SDL2. It provides game developers with efficient access to rendering, input, and sound, with minimal abstraction.</p>
+      <p>Velox is a low-level SDL2 wrapper for Python, giving you full control over rendering, events, and frame timing. It's designed for developers who want performance and precision without the overhead of large frameworks.</p>
     </section>
 
     <section id="install" class="mb-10">
       <h3 class="text-2xl font-semibold mb-2">📦 Installation</h3>
       <pre class="bg-gray-800 text-green-300 p-4 rounded overflow-x-auto">
-pip install velox
+pip install pysdl2
       </pre>
       <p class="text-sm text-gray-500 mt-1">Requires Python 3.7+ and SDL2 installed on your system.</p>
     </section>
@@ -45,8 +46,8 @@ pip install velox
       <pre class="bg-gray-900 text-white p-4 rounded overflow-x-auto">
 import velox
 
-win = velox.Window("Velox Demo", 800, 600)
-win.show()
+surface = velox.display_set_mode((800, 600))
+velox.display_set_caption("Velox Demo")
       </pre>
     </section>
 
@@ -54,33 +55,53 @@ win.show()
       <h3 class="text-2xl font-semibold mb-2">🔁 Game Loop</h3>
       <pre class="bg-gray-900 text-white p-4 rounded overflow-x-auto">
 running = True
+clock = velox.Clock()
+
 while running:
-    for event in velox.poll_events():
+    for event in velox.event_get():
         if event.type == velox.QUIT:
             running = False
 
-    win.clear(0, 0, 0)  # Clear with black
-    # drawing code...
-    win.present()       # Show frame
+    surface.paint((0, 0, 0))  # Clear with black
+    # drawing code here...
+    velox.display_flip()
+    clock.tick(60)
       </pre>
     </section>
 
     <section id="drawing" class="mb-10">
       <h3 class="text-2xl font-semibold mb-2">🖌️ Drawing</h3>
       <pre class="bg-gray-900 text-white p-4 rounded overflow-x-auto">
-win.draw_rect(100, 100, 50, 50, color=(255, 0, 0))  # Red square
+# Create a red surface
+red_surface = velox.Surface(50, 50)
+red_surface.paint((255, 0, 0))
+
+# Draw it onto the screen at position (100, 100)
+surface.flash(red_surface, (100, 100))
       </pre>
-      <p>Velox supports basic shapes, images, and text rendering via SDL2 surfaces and textures.</p>
+      <p class="text-sm text-gray-500 mt-1">Use <code>Surface.paint()</code> to color surfaces and <code>flash()</code> to render them onto the display.</p>
     </section>
 
     <section id="events" class="mb-10">
       <h3 class="text-2xl font-semibold mb-2">🎯 Event Handling</h3>
       <pre class="bg-gray-900 text-white p-4 rounded overflow-x-auto">
-for event in velox.poll_events():
-    if event.type == velox.KEYDOWN:
-        print("Key pressed:", event.key)
+keys = velox.key_get_pressed()
+if keys.get(velox.K_w):
+    print("W is being held down")
       </pre>
+      <p class="text-sm text-gray-500 mt-1">Use <code>event_get()</code> for SDL events and <code>key_get_pressed()</code> for real-time key state polling.</p>
     </section>
+
+    <section id="clock" class="mb-10">
+      <h3 class="text-2xl font-semibold mb-2">⏱️ Frame Limiting</h3>
+      <pre class="bg-gray-900 text-white p-4 rounded overflow-x-auto">
+clock = velox.Clock()
+
+while True:
+    fps = clock.tick(60)
+    print("FPS:", fps)
+      </pre>
+      <p class="text-sm text-gray-500 mt-1">Use <code>Clock.tick()</code> to limit frame rate and track current FPS.</p>
     </section>
   </main>
 </body>
