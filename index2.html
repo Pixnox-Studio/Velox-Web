@@ -3,34 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Velox · Python SDL2 Wrapper</title>
+  <title>Velox · Lightweight ModernGL Game Engine</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="flex min-h-screen">
 
   <aside class="w-64 bg-white shadow-lg p-6 hidden md:block">
     <h1 class="text-2xl font-bold text-blue-700 mb-4">Velox</h1>
-    <p class="text-xs text-gray-500 mb-6">SDL2 for Python. Fast. Lightweight. Modern.</p>
+    <p class="text-xs text-gray-500 mb-6">ModernGL + Pygame. Lightweight and modular.</p>
     <nav class="space-y-3 text-sm">
       <a href="#intro" class="block hover:text-blue-600">🎮 Introduction</a>
       <a href="#install" class="block hover:text-blue-600">📦 Installation</a>
-      <a href="#init-window" class="block hover:text-blue-600">🖥️ Creating a Window</a>
-      <a href="#game-loop" class="block hover:text-blue-600">🔁 Game Loop</a>
-      <a href="#drawing" class="block hover:text-blue-600">🖌️ Drawing</a>
+      <a href="#window" class="block hover:text-blue-600">🖥️ Creating a Window</a>
+      <a href="#engine" class="block hover:text-blue-600">🔁 Engine Structure</a>
+      <a href="#scenes" class="block hover:text-blue-600">🎬 Scene Management</a>
       <a href="#events" class="block hover:text-blue-600">🎯 Event Handling</a>
-      <a href="#clock" class="block hover:text-blue-600">⏱️ Frame Limiting</a>
     </nav>
   </aside>
 
   <main class="flex-1 p-8 overflow-y-auto">
     <header class="mb-10">
       <h2 class="text-4xl font-bold text-blue-700 mb-2">Velox</h2>
-      <p class="text-gray-600 text-lg">A blazing-fast SDL2 wrapper for Python. Built for speed, flexibility, and control.</p>
+      <p class="text-gray-600 text-lg">A simple yet flexible ModernGL + Pygame framework for game development and rapid prototyping.</p>
     </header>
 
     <section id="intro" class="mb-10">
       <h3 class="text-2xl font-semibold mb-2">🎮 Introduction</h3>
-      <p>Velox is a low-level SDL2 wrapper for Python, giving you full control over rendering, events, and frame timing. It's designed for developers who want performance and precision without the overhead of large frameworks.</p>
+      <p>Velox is a Python game engine designed with simplicity, clarity, and modularity in mind. It uses <strong>ModernGL</strong> for rendering and <strong>Pygame</strong> for window management and input. Ideal for small games, tools, and graphics experiments.</p>
     </section>
 
     <section id="install" class="mb-10">
@@ -38,70 +37,60 @@
       <pre class="bg-gray-800 text-green-300 p-4 rounded overflow-x-auto">
 pip install VeloxEngine
       </pre>
-      <p class="text-sm text-gray-500 mt-1">Requires Python 3.7+ and SDL2 installed on your system.</p>
+      <p class="text-sm text-gray-500 mt-1">Make sure you have Python 3.7+ installed.</p>
     </section>
 
-    <section id="init-window" class="mb-10">
+    <section id="window" class="mb-10">
       <h3 class="text-2xl font-semibold mb-2">🖥️ Creating a Window</h3>
       <pre class="bg-gray-900 text-white p-4 rounded overflow-x-auto">
-import velox
+import VeloxEngine
 
-surface = velox.display_set_mode((800, 600))
-velox.display_set_caption("Velox Demo")
+engine = Engine()
+engine.run()
       </pre>
+      <p class="text-sm text-gray-500 mt-1">This initializes a resizable OpenGL window and enters the game loop.</p>
     </section>
 
-    <section id="game-loop" class="mb-10">
-      <h3 class="text-2xl font-semibold mb-2">🔁 Game Loop</h3>
+    <section id="engine" class="mb-10">
+      <h3 class="text-2xl font-semibold mb-2">🔁 Engine Structure</h3>
       <pre class="bg-gray-900 text-white p-4 rounded overflow-x-auto">
-running = True
-clock = velox.Clock()
-
-while running:
-    for event in velox.event_get():
-        if event.type == velox.QUIT:
-            running = False
-
-    surface.paint((0, 0, 0))  # Clear with black
-    # drawing code here...
-    velox.display_flip()
-    clock.tick(60)
+class Engine:
+    def run(self):
+        while self.running:
+            self.event_handler()
+            self.update()
+            self.render()
+        self.close()
       </pre>
+      <p class="text-sm text-gray-500 mt-1">The <code>Engine</code> class handles initialization, the main loop, and graceful shutdown.</p>
     </section>
 
-    <section id="drawing" class="mb-10">
-      <h3 class="text-2xl font-semibold mb-2">🖌️ Drawing</h3>
+    <section id="scenes" class="mb-10">
+      <h3 class="text-2xl font-semibold mb-2">🎬 Scene Management</h3>
       <pre class="bg-gray-900 text-white p-4 rounded overflow-x-auto">
-# Create a red surface
-red_surface = velox.Surface(50, 50)
-red_surface.paint((255, 0, 0))
+from velox.scenes.scene import Scene
 
-# Draw it onto the screen at position (100, 100)
-surface.flash(red_surface, (100, 100))
+class MyScene(Scene):
+    def on_create(self):
+        print("Scene started")
+
+    def on_update(self):
+        pass
+
+engine.add_scene("main", MyScene())
       </pre>
-      <p class="text-sm text-gray-500 mt-1">Use <code>Surface.paint()</code> to color surfaces and <code>flash()</code> to render them onto the display.</p>
+      <p class="text-sm text-gray-500 mt-1">Scenes are registered with the engine and are responsible for update, rendering, and events.</p>
     </section>
 
     <section id="events" class="mb-10">
       <h3 class="text-2xl font-semibold mb-2">🎯 Event Handling</h3>
       <pre class="bg-gray-900 text-white p-4 rounded overflow-x-auto">
-keys = velox.key_get_pressed()
-if keys.get(velox.K_w):
-    print("W is being held down")
+def on_event(self, event):
+    if event.type == pg.KEYDOWN:
+        if event.key == pg.K_ESCAPE:
+            self.engine.running = False
       </pre>
-      <p class="text-sm text-gray-500 mt-1">Use <code>event_get()</code> for SDL events and <code>key_get_pressed()</code> for real-time key state polling.</p>
-    </section>
-
-    <section id="clock" class="mb-10">
-      <h3 class="text-2xl font-semibold mb-2">⏱️ Frame Limiting</h3>
-      <pre class="bg-gray-900 text-white p-4 rounded overflow-x-auto">
-clock = velox.Clock()
-
-while True:
-    fps = clock.tick(60)
-    print("FPS:", fps)
-      </pre>
-      <p class="text-sm text-gray-500 mt-1">Use <code>Clock.tick()</code> to limit frame rate and track current FPS.</p>
+      <p class="text-sm text-gray-500 mt-1">Events are passed directly to the active scene for handling.</p>
     </section>
   </main>
 </body>
